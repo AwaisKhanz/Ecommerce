@@ -18,7 +18,6 @@ const serverSchema = z.object({
   RESEND_FROM_EMAIL: z.string().email().optional(),
   RESEND_FROM_NAME: z.string().min(1).optional(),
   ADMIN_NOTIFY_EMAIL: z.string().email().optional(),
-  SENTRY_DSN: z.string().url().optional(),
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
 });

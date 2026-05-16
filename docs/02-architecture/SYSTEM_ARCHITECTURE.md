@@ -43,6 +43,7 @@
 ## 2. Architectural Style
 
 **Modular monolith** within a Next.js app:
+
 - Feature-based modules (catalog, cart, checkout, orders, admin)
 - Shared infrastructure (db, auth, email, logging)
 - Single deploy target = Vercel
@@ -52,25 +53,27 @@ This is the right choice for the scale: simple to operate, easy to reason about,
 
 ## 3. Rendering Strategy
 
-| Route group | Rendering | Reason |
-|---|---|---|
-| `/` (home) | RSC + ISR (revalidate 1h) | Mostly static, occasional updates |
-| `/shop` | RSC + dynamic | Needs fresh stock/price |
-| `/shop/[slug]` (product) | RSC + ISR (revalidate 5m) | SEO-critical, near-static |
-| `/cart` | CSR | Per-user, no SEO value |
-| `/checkout` | CSR + Server Action | Per-user, mutation-heavy |
-| `/admin/*` | CSR + RSC hybrid | Auth-gated, no SEO |
-| `/contact`, `/about`, `/services` | RSC static | Marketing pages |
+| Route group                       | Rendering                 | Reason                            |
+| --------------------------------- | ------------------------- | --------------------------------- |
+| `/` (home)                        | RSC + ISR (revalidate 1h) | Mostly static, occasional updates |
+| `/shop`                           | RSC + dynamic             | Needs fresh stock/price           |
+| `/shop/[slug]` (product)          | RSC + ISR (revalidate 5m) | SEO-critical, near-static         |
+| `/cart`                           | CSR                       | Per-user, no SEO value            |
+| `/checkout`                       | CSR + Server Action       | Per-user, mutation-heavy          |
+| `/admin/*`                        | CSR + RSC hybrid          | Auth-gated, no SEO                |
+| `/contact`, `/about`, `/services` | RSC static                | Marketing pages                   |
 
 ## 4. Data Flow Patterns
 
 ### 4.1 Public read (e.g., product list)
+
 ```
 Browser → Next.js RSC → Supabase (anon client w/ RLS)
                 ↘ cached in React cache + ISR
 ```
 
 ### 4.2 Customer write (e.g., place order)
+
 ```
 Browser form → Server Action → Validate (Zod) → Supabase RPC (transactional)
                                                       ↓
@@ -82,6 +85,7 @@ Browser form → Server Action → Validate (Zod) → Supabase RPC (transactiona
 ```
 
 ### 4.3 Admin write (e.g., update product)
+
 ```
 Admin UI → React Query mutation → Route Handler `/api/admin/...`
                                        ↓
@@ -103,16 +107,17 @@ Admin UI → React Query mutation → Route Handler `/api/admin/...`
 
 ## 6. Caching Strategy
 
-| Layer | What | TTL |
-|---|---|---|
-| Vercel CDN | Static assets, images | 1 year (hashed) |
-| Next.js ISR | Product pages | 5 minutes |
-| Next.js full-route cache | Listing pages | Revalidated on tag |
-| React `cache()` | Per-request dedup | Per request |
-| TanStack Query | Admin client cache | 30s stale, 5m gc |
-| Supabase | None at app level | — |
+| Layer                    | What                  | TTL                |
+| ------------------------ | --------------------- | ------------------ |
+| Vercel CDN               | Static assets, images | 1 year (hashed)    |
+| Next.js ISR              | Product pages         | 5 minutes          |
+| Next.js full-route cache | Listing pages         | Revalidated on tag |
+| React `cache()`          | Per-request dedup     | Per request        |
+| TanStack Query           | Admin client cache    | 30s stale, 5m gc   |
+| Supabase                 | None at app level     | —                  |
 
 **Cache invalidation triggers:**
+
 - `revalidateTag('products')` on product create/update/delete
 - `revalidateTag('categories')` on category change
 - `revalidateTag('orders')` on order status change (admin only views this anyway)
@@ -122,7 +127,7 @@ Admin UI → React Query mutation → Route Handler `/api/admin/...`
 - All Server Actions return `{ ok: true, data } | { ok: false, error: AppError }`
 - Route Handlers return typed JSON with proper HTTP status
 - Client wraps mutations with toast notifications
-- Unexpected errors bubble to Sentry
+- Unexpected errors flow through the shared logging path
 - User-facing errors are localized
 
 ## 8. Asynchronous Work
@@ -138,7 +143,7 @@ A `email_outbox` table is created from day 1 to enable Phase 2 without schema mi
 ## 9. Observability
 
 - **Logs:** Pino (server) → stdout → Vercel logs → optionally drained to Logtail
-- **Errors:** Sentry (browser + server)
+- **Errors:** shared client logger + Pino server logs
 - **Performance:** Vercel Speed Insights, Web Vitals API
 - **Business events:** Custom event layer → Vercel Analytics + DB `events` table for audit
 
@@ -169,13 +174,13 @@ src/
 
 ## 12. Scalability Plan
 
-| Scale event | Action |
-|---|---|
-| 10x traffic | Already handled by Vercel + Supabase scaling |
-| 100k products | Add Postgres indexes (already planned); add Meilisearch |
-| 10k orders/day | Move email to queue; add read replicas |
-| Multi-region | Vercel multi-region + Supabase read replicas per region |
-| Mobile app | Reuse Supabase backend + add REST endpoints under `/api/v1/` |
+| Scale event    | Action                                                       |
+| -------------- | ------------------------------------------------------------ |
+| 10x traffic    | Already handled by Vercel + Supabase scaling                 |
+| 100k products  | Add Postgres indexes (already planned); add Meilisearch      |
+| 10k orders/day | Move email to queue; add read replicas                       |
+| Multi-region   | Vercel multi-region + Supabase read replicas per region      |
+| Mobile app     | Reuse Supabase backend + add REST endpoints under `/api/v1/` |
 
 ## 13. Architectural Decision Records (ADRs)
 

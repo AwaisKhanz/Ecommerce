@@ -2,18 +2,19 @@
 
 ## 1. Environments
 
-| Env | Purpose | URL | Branch |
-|---|---|---|---|
-| **Local** | Developer machines | `http://localhost:3000` | any |
-| **Preview** | Per-PR auto-deploys | `https://industrial-shop-pr-<n>.vercel.app` | feature branches |
-| **Staging** | Pre-prod testing | `https://staging.industrialshop.com` | `develop` |
-| **Production** | Live | `https://industrialshop.com` | `main` |
+| Env            | Purpose             | URL                                         | Branch           |
+| -------------- | ------------------- | ------------------------------------------- | ---------------- |
+| **Local**      | Developer machines  | `http://localhost:3000`                     | any              |
+| **Preview**    | Per-PR auto-deploys | `https://industrial-shop-pr-<n>.vercel.app` | feature branches |
+| **Staging**    | Pre-prod testing    | `https://staging.industrialshop.com`        | `develop`        |
+| **Production** | Live                | `https://industrialshop.com`                | `main`           |
 
 Each non-local environment has its own Supabase project + Resend key (staging uses sandbox keys).
 
 ## 2. Hosting Choice
 
 **Vercel** for the Next.js app:
+
 - Zero-config Next.js builds
 - Preview deployments per PR
 - Edge network + image optimization
@@ -48,6 +49,7 @@ Use Vercel's "secret" tag for service role keys.
 ### 3.4 Email DNS (Resend)
 
 In your domain DNS:
+
 - `MX` (none needed; Resend is send-only)
 - `TXT` SPF: `v=spf1 include:resend.com ~all`
 - `TXT` DKIM: provided by Resend
@@ -70,6 +72,7 @@ PR opened
 ```
 
 Merging to `main`:
+
 ```
 main updated
    │
@@ -78,8 +81,6 @@ main updated
    ├─► Vercel Production Build
    │
    ├─► DB migrations run (manual review-gated; see §6)
-   │
-   ├─► Sentry release created + sourcemaps uploaded
    │
    └─► Slack notification to #deploys
 ```
@@ -103,7 +104,10 @@ main updated
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        }
       ]
     }
   ]
@@ -130,7 +134,7 @@ Workflow:
 ```yaml
 # .github/workflows/migrate-prod.yml (manually triggered)
 name: Migrate Prod DB
-on: { workflow_dispatch: }
+on: { workflow_dispatch }
 jobs:
   migrate:
     runs-on: ubuntu-latest
@@ -142,6 +146,7 @@ jobs:
 ```
 
 Migrations must be **forward-only**, additive when possible. Destructive changes require a 2-phase deploy:
+
 1. Add new column / new behavior; backfill
 2. Stop writing old column
 3. Drop old column in a later release
@@ -153,7 +158,7 @@ Migrations must be **forward-only**, additive when possible. Destructive changes
 - `feat/*`, `fix/*` → preview deploys
 
 Tags (`v1.0.0`, `v1.0.1`) cut from `main` mark production releases. Tags trigger:
-- Sentry release creation
+
 - Changelog generation
 - Slack announcement
 
@@ -164,21 +169,24 @@ Tags (`v1.0.0`, `v1.0.1`) cut from `main` mark production releases. Tags trigger
 3. Merge into `main` and tag
 4. Vercel auto-deploys to production
 5. Trigger DB migration workflow if needed
-6. Watch Sentry + Vercel logs for 30 minutes
+6. Watch Vercel logs for 30 minutes
 7. Announce release in Slack
 
 ## 9. Rollback Plan
 
 ### 9.1 Code rollback
+
 - In Vercel **Deployments** tab → find last good deployment → **Promote to Production**
 - Takes < 30 seconds
 
 ### 9.2 DB rollback
+
 - Only possible if change was additive (always preferred)
 - For destructive changes: restore from point-in-time backup (Supabase Pro)
 - Document any destructive change with a rollback script committed beforehand
 
 ### 9.3 Feature flag kill switch
+
 - Toggle the relevant flag in `/admin/settings/feature-flags`
 - Effect is immediate (cached for at most a few seconds)
 
@@ -191,7 +199,8 @@ Tags (`v1.0.0`, `v1.0.1`) cut from `main` mark production releases. Tags trigger
 ## 11. Monitoring Post-Deploy
 
 After every production deploy:
-- Watch Sentry release dashboard for new errors
+
+- Watch Vercel logs for new errors
 - Watch Vercel Speed Insights for regressions
 - Watch error rate over 30 minutes
 - If error rate > 1% above baseline → rollback
@@ -205,25 +214,24 @@ After every production deploy:
 
 ## 13. Cost Awareness
 
-| Service | Free tier | Upgrade trigger |
-|---|---|---|
-| Vercel | Hobby | First production deploy → Pro |
-| Supabase | Free | When DB > 500MB or requests > 50k/day |
-| Resend | 100/day | When > 80/day for 3 days |
-| Sentry | 5k events/mo | When near limit |
-| Upstash | 10k commands/day | When near limit |
+| Service  | Free tier        | Upgrade trigger                       |
+| -------- | ---------------- | ------------------------------------- |
+| Vercel   | Hobby            | First production deploy → Pro         |
+| Supabase | Free             | When DB > 500MB or requests > 50k/day |
+| Resend   | 100/day          | When > 80/day for 3 days              |
+| Upstash  | 10k commands/day | When near limit                       |
 
 Budgets are reviewed quarterly.
 
 ## 14. Disaster Recovery
 
-| Scenario | RPO | RTO |
-|---|---|---|
-| Code regression | 0 | 5 min (Vercel rollback) |
-| DB corruption | 1 hour (PITR on Pro) | 30 min |
-| Region outage | — | follow Vercel/Supabase incident |
-| Domain DNS issue | — | DNS TTL 5 min for fast change |
-| Email provider outage | — | failover to backup provider (Phase 2) |
+| Scenario              | RPO                  | RTO                                   |
+| --------------------- | -------------------- | ------------------------------------- |
+| Code regression       | 0                    | 5 min (Vercel rollback)               |
+| DB corruption         | 1 hour (PITR on Pro) | 30 min                                |
+| Region outage         | —                    | follow Vercel/Supabase incident       |
+| Domain DNS issue      | —                    | DNS TTL 5 min for fast change         |
+| Email provider outage | —                    | failover to backup provider (Phase 2) |
 
 ## 15. Production Readiness Checklist
 
@@ -234,7 +242,6 @@ Budgets are reviewed quarterly.
 - [ ] RLS enabled and tested
 - [ ] Migrations applied successfully
 - [ ] First admin user created via bootstrap script
-- [ ] Sentry receiving events
 - [ ] Uptime monitor configured
 - [ ] Backups verified (manual download once)
 - [ ] Privacy policy + Terms pages live

@@ -174,7 +174,7 @@ Run after every deploy:
 
 ## 24. Incident Response
 
-- Detection via Sentry / Better Stack
+- Detection via application logs / Better Stack
 - Response steps in `LOGGING_MONITORING.md §17`
 - Disclosure: 72-hour notification for personal-data breaches
 - Public security contact: `security@industrialshop.com`
@@ -192,6 +192,6 @@ Run after every deploy:
 - [ ] `pnpm audit` clean
 - [ ] Privacy policy + Terms live
 - [ ] Backup + recovery tested
-- [ ] Sentry receiving + scrubbing PII
+- [ ] Logging path verified without leaking PII
 - [ ] Admin MFA-ready (UI present, can enable per user)
 - [ ] Strong admin password set, BOOTSTRAP\_\* env vars purged after first run

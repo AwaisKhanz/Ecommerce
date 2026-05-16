@@ -14,7 +14,6 @@ declare namespace NodeJS {
     RESEND_FROM_EMAIL: string;
     RESEND_FROM_NAME: string;
     ADMIN_NOTIFY_EMAIL: string;
-    SENTRY_DSN?: string;
     UPSTASH_REDIS_REST_URL?: string;
     UPSTASH_REDIS_REST_TOKEN?: string;
   }

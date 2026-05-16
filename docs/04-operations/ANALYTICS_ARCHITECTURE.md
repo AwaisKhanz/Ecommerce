@@ -9,31 +9,31 @@
 
 ## 2. Tooling
 
-| Layer | Tool | Use |
-|---|---|---|
-| Web vitals + RUM | **Vercel Analytics + Speed Insights** | LCP/CLS/INP, page views |
-| Product analytics | **PostHog (self-hosted or cloud, Phase 2)** OR **custom DB events** | funnels, retention |
-| Server-side events | Custom in `audit_logs` + `events` table | always-on, no consent needed |
-| Marketing pixels | **Google Analytics 4 / Meta** (consent-gated) | Phase 2+ |
+| Layer              | Tool                                                                | Use                          |
+| ------------------ | ------------------------------------------------------------------- | ---------------------------- |
+| Web vitals + RUM   | **Vercel Analytics + Speed Insights**                               | LCP/CLS/INP, page views      |
+| Product analytics  | **PostHog (self-hosted or cloud, Phase 2)** OR **custom DB events** | funnels, retention           |
+| Server-side events | Custom in `audit_logs` + `events` table                             | always-on, no consent needed |
+| Marketing pixels   | **Google Analytics 4 / Meta** (consent-gated)                       | Phase 2+                     |
 
 ## 3. Event Taxonomy
 
 Naming: `noun.action` in past tense, snake_case.
 
-| Event | Properties |
-|---|---|
-| `page.viewed` | `path`, `locale`, `referrer` |
-| `product.viewed` | `productId`, `slug`, `categoryId`, `price` |
-| `product.added_to_cart` | `productId`, `qty`, `price` |
-| `cart.viewed` | `lineCount`, `subtotal` |
-| `checkout.started` | `lineCount`, `subtotal` |
-| `checkout.submitted` | `lineCount`, `total` |
-| `order.placed` | `orderId`, `total`, `itemCount` |
-| `order.status_changed` | `orderId`, `from`, `to` |
-| `search.performed` | `query`, `resultCount` |
-| `filter.applied` | `filterKey`, `value` |
-| `contact.submitted` | `subject` |
-| `admin.action.*` | varies |
+| Event                   | Properties                                 |
+| ----------------------- | ------------------------------------------ |
+| `page.viewed`           | `path`, `locale`, `referrer`               |
+| `product.viewed`        | `productId`, `slug`, `categoryId`, `price` |
+| `product.added_to_cart` | `productId`, `qty`, `price`                |
+| `cart.viewed`           | `lineCount`, `subtotal`                    |
+| `checkout.started`      | `lineCount`, `subtotal`                    |
+| `checkout.submitted`    | `lineCount`, `total`                       |
+| `order.placed`          | `orderId`, `total`, `itemCount`            |
+| `order.status_changed`  | `orderId`, `from`, `to`                    |
+| `search.performed`      | `query`, `resultCount`                     |
+| `filter.applied`        | `filterKey`, `value`                       |
+| `contact.submitted`     | `subject`                                  |
+| `admin.action.*`        | varies                                     |
 
 ## 4. Event Layer Abstraction
 
@@ -43,10 +43,10 @@ import { isBrowser } from '@/lib/utils/env';
 import { va } from '@vercel/analytics';
 
 type EventMap = {
-  'product.viewed':       { productId: string; slug: string; price: number };
-  'product.added_to_cart':{ productId: string; qty: number; price: number };
-  'checkout.submitted':   { lineCount: number; total: number };
-  'order.placed':         { orderId: string; total: number; itemCount: number };
+  'product.viewed': { productId: string; slug: string; price: number };
+  'product.added_to_cart': { productId: string; qty: number; price: number };
+  'checkout.submitted': { lineCount: number; total: number };
+  'order.placed': { orderId: string; total: number; itemCount: number };
   // ...
 };
 
@@ -61,16 +61,16 @@ Server-side events use `serverTrack(...)` which writes to `audit_logs`/`events`.
 
 ## 5. Server vs Client Events
 
-| Concern | Where to fire |
-|---|---|
-| Page views | Client (Vercel Analytics built-in) |
-| Product viewed | Client |
-| Add to cart | Client |
-| Checkout started | Client |
+| Concern          | Where to fire                       |
+| ---------------- | ----------------------------------- |
+| Page views       | Client (Vercel Analytics built-in)  |
+| Product viewed   | Client                              |
+| Add to cart      | Client                              |
+| Checkout started | Client                              |
 | **Order placed** | **Server** (single source of truth) |
-| Status changed | Server |
-| Admin actions | Server (audit log) |
-| Errors | Server (Sentry) |
+| Status changed   | Server                              |
+| Admin actions    | Server (audit log)                  |
+| Errors           | Server logs                         |
 
 Rule: anything that must be 100% reliable lives server-side.
 
@@ -87,12 +87,15 @@ Rule: anything that must be 100% reliable lives server-side.
 ## 7. Dashboards
 
 ### 7.1 Built-in Vercel
+
 - Page views per route
 - Top referrers
 - Web Vitals trends
 
 ### 7.2 Admin Business Dashboard
+
 Built in the admin panel using DB queries:
+
 - Orders today / week / month
 - Revenue (delivered orders)
 - Top products by qty / revenue
@@ -103,6 +106,7 @@ Built in the admin panel using DB queries:
 - Sales chart (30 days)
 
 ### 7.3 Operational Dashboard (Phase 2)
+
 - Error rate
 - p75 page latency
 - Email send success rate
@@ -111,6 +115,7 @@ Built in the admin panel using DB queries:
 ## 8. Funnels
 
 Primary conversion funnel:
+
 ```
 page.viewed (home/shop) → product.viewed → product.added_to_cart →
 checkout.started → checkout.submitted → order.placed
@@ -142,16 +147,17 @@ Architecturally ready via Feature Flags. Bucket users via deterministic hash of 
 
 ## 12. Data Retention
 
-| Source | Retention |
-|---|---|
-| Vercel Analytics | Per plan (90 days default) |
-| PostHog | Configurable; 1 year recommended |
-| `audit_logs` | 1 year, then archive |
-| `events` | 6 months hot, archive cold |
+| Source           | Retention                        |
+| ---------------- | -------------------------------- |
+| Vercel Analytics | Per plan (90 days default)       |
+| PostHog          | Configurable; 1 year recommended |
+| `audit_logs`     | 1 year, then archive             |
+| `events`         | 6 months hot, archive cold       |
 
 ## 13. Exporting Data
 
 `/admin/orders/export` exports CSV for the date range. Phase 2 adds:
+
 - Scheduled email of weekly summary to admin
 - Webhook into Google Sheets
 
