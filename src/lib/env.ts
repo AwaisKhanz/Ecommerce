@@ -12,12 +12,12 @@ const clientSchema = z.object({
 
 const serverSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']),
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
-  SUPABASE_JWT_SECRET: z.string().min(1),
-  RESEND_API_KEY: z.string().min(1),
-  RESEND_FROM_EMAIL: z.string().email(),
-  RESEND_FROM_NAME: z.string().min(1),
-  ADMIN_NOTIFY_EMAIL: z.string().email(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+  SUPABASE_JWT_SECRET: z.string().min(1).optional(),
+  RESEND_API_KEY: z.string().min(1).optional(),
+  RESEND_FROM_EMAIL: z.string().email().optional(),
+  RESEND_FROM_NAME: z.string().min(1).optional(),
+  ADMIN_NOTIFY_EMAIL: z.string().email().optional(),
   SENTRY_DSN: z.string().url().optional(),
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
