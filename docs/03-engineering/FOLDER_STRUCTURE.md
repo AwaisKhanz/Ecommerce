@@ -215,6 +215,7 @@ src/features/
 ```
 
 ### Feature module rules
+
 - A feature's `index.ts` is its **public API**. Other features only import from there, never deep paths.
 - Server code lives under `feature/server/` and is never imported from client components.
 - Schemas are shared between client (form) and server (action/route).
@@ -370,45 +371,45 @@ src/styles/
 {
   "compilerOptions": {
     "paths": {
-      "@/app/*":         ["./src/app/*"],
-      "@/features/*":    ["./src/features/*"],
-      "@/components/*":  ["./src/components/*"],
-      "@/lib/*":         ["./src/lib/*"],
-      "@/hooks/*":       ["./src/hooks/*"],
-      "@/types/*":       ["./src/types/*"],
-      "@/config/*":      ["./src/config/*"],
-      "@/styles/*":      ["./src/styles/*"]
-    }
-  }
+      "@/app/*": ["./src/app/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/config/*": ["./src/config/*"],
+      "@/styles/*": ["./src/styles/*"],
+    },
+  },
 }
 ```
 
 ## 11. Import Boundary Rules (enforced via ESLint)
 
-| Layer | May import from |
-|---|---|
-| `app/` | `features`, `components`, `lib`, `hooks`, `config`, `types` |
-| `features/X` | `components`, `lib`, `hooks`, `config`, `types`, *its own subfolders only* |
-| `components/` | `lib`, `hooks`, `config`, `types` (no `features/*`) |
-| `lib/` | `config`, `types`, other `lib/*` modules |
-| `hooks/` | `lib`, `types`, `config` |
+| Layer         | May import from                                                            |
+| ------------- | -------------------------------------------------------------------------- |
+| `app/`        | `features`, `components`, `lib`, `hooks`, `config`, `types`                |
+| `features/X`  | `components`, `lib`, `hooks`, `config`, `types`, _its own subfolders only_ |
+| `components/` | `components`, `lib`, `hooks`, `config`, `types` (no `features/*`)          |
+| `lib/`        | `config`, `types`, other `lib/*` modules                                   |
+| `hooks/`      | `lib`, `types`, `config`                                                   |
 
 A feature **must not** import from another feature. If shared, lift to `lib` or `components`.
 
 ## 12. File & Folder Naming
 
-| Type | Convention | Example |
-|---|---|---|
-| React component file | `kebab-case.tsx` | `product-card.tsx` |
-| Component export name | `PascalCase` | `ProductCard` |
-| Hook file | `use-xxx.ts` | `use-cart.ts` |
-| Hook name | `useXxx` | `useCart` |
-| Service file | `xxx.service.ts` | `order.service.ts` |
-| Repository file | `xxx.repository.ts` | `product.repository.ts` |
-| Schema file | `xxx.schema.ts` | `checkout.schema.ts` |
-| Action file | `xxx.action.ts` | `place-order.action.ts` |
-| Type file | `types.ts` or `xxx.types.ts` | `product.types.ts` |
-| Const file | `xxx.ts` (in `config/`) | `nav.ts` |
+| Type                  | Convention                   | Example                 |
+| --------------------- | ---------------------------- | ----------------------- |
+| React component file  | `kebab-case.tsx`             | `product-card.tsx`      |
+| Component export name | `PascalCase`                 | `ProductCard`           |
+| Hook file             | `use-xxx.ts`                 | `use-cart.ts`           |
+| Hook name             | `useXxx`                     | `useCart`               |
+| Service file          | `xxx.service.ts`             | `order.service.ts`      |
+| Repository file       | `xxx.repository.ts`          | `product.repository.ts` |
+| Schema file           | `xxx.schema.ts`              | `checkout.schema.ts`    |
+| Action file           | `xxx.action.ts`              | `place-order.action.ts` |
+| Type file             | `types.ts` or `xxx.types.ts` | `product.types.ts`      |
+| Const file            | `xxx.ts` (in `config/`)      | `nav.ts`                |
 
 ## 13. Index Files
 
@@ -419,8 +420,10 @@ A feature **must not** import from another feature. If shared, lift to `lib` or 
 ## 14. Tests Co-location
 
 Unit tests sit next to the unit:
+
 ```
 product.service.ts
 product.service.test.ts
 ```
+
 End-to-end and integration tests live under `/tests`.

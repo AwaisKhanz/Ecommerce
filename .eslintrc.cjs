@@ -30,7 +30,7 @@ module.exports = {
           },
           {
             from: 'components',
-            allow: ['lib', 'hooks', 'config', 'types', 'styles'],
+            allow: ['components', 'lib', 'hooks', 'config', 'types', 'styles'],
           },
           {
             from: 'lib',
