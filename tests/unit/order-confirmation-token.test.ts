@@ -3,15 +3,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 describe('order confirmation tokens', () => {
   beforeEach(() => {
     vi.resetModules();
-    process.env.NODE_ENV = 'test';
-    process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000';
-    process.env.NEXT_PUBLIC_APP_NAME = 'IndustrialShop';
-    process.env.NEXT_PUBLIC_DEFAULT_LOCALE = 'en';
-    process.env.NEXT_PUBLIC_ENABLED_LOCALES = 'en';
-    process.env.NEXT_PUBLIC_DEFAULT_CURRENCY = 'USD';
-    process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://example.supabase.co';
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'anon-key';
-    process.env.ORDER_CONFIRMATION_SIGNING_SECRET = 'test-order-confirmation-secret';
+    vi.unstubAllEnvs();
+    vi.stubEnv('NODE_ENV', 'test');
+    vi.stubEnv('NEXT_PUBLIC_APP_URL', 'http://localhost:3000');
+    vi.stubEnv('NEXT_PUBLIC_APP_NAME', 'IndustrialShop');
+    vi.stubEnv('NEXT_PUBLIC_DEFAULT_LOCALE', 'en');
+    vi.stubEnv('NEXT_PUBLIC_ENABLED_LOCALES', 'en');
+    vi.stubEnv('NEXT_PUBLIC_DEFAULT_CURRENCY', 'USD');
+    vi.stubEnv('NEXT_PUBLIC_SUPABASE_URL', 'https://example.supabase.co');
+    vi.stubEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY', 'anon-key');
+    vi.stubEnv('ORDER_CONFIRMATION_SIGNING_SECRET', 'test-order-confirmation-secret');
   });
 
   it('signs and verifies valid tokens', async () => {
