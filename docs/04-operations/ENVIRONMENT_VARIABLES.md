@@ -48,13 +48,11 @@
 
 ### 2.5 Analytics & Monitoring
 
-| Name                              | Required   | Example                     |
-| --------------------------------- | ---------- | --------------------------- |
-| `SENTRY_DSN`                      | yes (prod) | `https://...@sentry.io/...` |
-| `SENTRY_AUTH_TOKEN`               | CI only    | `...`                       |
-| `SENTRY_ORG`                      | CI only    | `industrialshop`            |
-| `SENTRY_PROJECT`                  | CI only    | `web`                       |
-| `NEXT_PUBLIC_VERCEL_ANALYTICS_ID` | optional   | auto-set on Vercel          |
+| Name                              | Required | Example            |
+| --------------------------------- | -------- | ------------------ |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS_ID` | optional | auto-set on Vercel |
+
+No dedicated error-tracking secrets are required in the current owner-approved stack.
 
 ### 2.6 Rate Limiting (Upstash Redis)
 
@@ -80,7 +78,6 @@ Used only by the one-off `pnpm run admin:create` script.
 | ----------------------- | ----------- |
 | `VERCEL_ENV`            | Vercel auto |
 | `VERCEL_GIT_COMMIT_SHA` | Vercel auto |
-| `SENTRY_RELEASE`        | CI          |
 
 ## 3. `.env.example`
 
@@ -107,9 +104,6 @@ RESEND_FROM_EMAIL=orders@example.com
 RESEND_FROM_NAME=IndustrialShop
 ADMIN_NOTIFY_EMAIL=owner@example.com
 
-# === Sentry ===
-SENTRY_DSN=
-
 # === Upstash Redis ===
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
@@ -128,7 +122,6 @@ const serverSchema = z.object({
   RESEND_FROM_EMAIL: z.string().email(),
   RESEND_FROM_NAME: z.string().min(1),
   ADMIN_NOTIFY_EMAIL: z.string().email(),
-  SENTRY_DSN: z.string().url().optional(),
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
 });
@@ -185,7 +178,7 @@ export const env = { ...parsedClient.data, ...(parsedServer ?? {}) } as z.infer<
 | `NODE_ENV`            | development             | production             | production                   |
 | Supabase              | local project           | staging project        | production project           |
 | Resend                | sandbox key             | sandbox key            | live key                     |
-| Sentry                | disabled                | enabled (separate env) | enabled                      |
+| Error tracking        | Vercel logs             | Vercel logs            | Vercel logs                  |
 
 ## 7. Secret Rotation Policy
 
@@ -195,7 +188,6 @@ export const env = { ...parsedClient.data, ...(parsedServer ?? {}) } as z.infer<
 | Order confirmation signing secret | Annually + on suspected leak  |
 | Resend API key                    | Quarterly                     |
 | Admin passwords                   | Quarterly                     |
-| Sentry DSN                        | Annually                      |
 
 After rotation, update Vercel env, redeploy, and revoke old key.
 

@@ -21,22 +21,22 @@
     "target": "ES2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "preserve",
-    "incremental": true
-  }
+    "incremental": true,
+  },
 }
 ```
 
 ### 1.2 Forbidden patterns
 
-| ❌ | ✅ |
-|---|---|
-| `any` | Use `unknown` + narrow, or define the type |
-| `as Foo` casts | Use `z.parse` / guards |
-| `// @ts-ignore` | Use `// @ts-expect-error: <reason>` only with reason |
-| `enum` | Use `as const` objects or literal unions |
-| `namespace` | Use modules |
+| ❌                                           | ✅                                                          |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| `any`                                        | Use `unknown` + narrow, or define the type                  |
+| `as Foo` casts                               | Use `z.parse` / guards                                      |
+| `// @ts-ignore`                              | Use `// @ts-expect-error: <reason>` only with reason        |
+| `enum`                                       | Use `as const` objects or literal unions                    |
+| `namespace`                                  | Use modules                                                 |
 | `function () {}` declarations for components | Use arrow components OR named function exports consistently |
-| Default exports for components | Named exports (helps refactors & search) |
+| Default exports for components               | Named exports (helps refactors & search)                    |
 
 ### 1.3 Required patterns
 
@@ -48,25 +48,30 @@
 ## 2. Naming Conventions
 
 ### 2.1 Variables
+
 - `camelCase` for variables and functions
 - `PascalCase` for types, interfaces, classes, components
 - `UPPER_SNAKE` for module-level constants
 - Boolean variables prefixed with `is`, `has`, `can`, `should`
 
 ### 2.2 Files and folders
+
 See `FOLDER_STRUCTURE.md §12`.
 
 ### 2.3 Database & SQL
+
 - Tables: `snake_case`, plural (`products`, `order_items`)
 - Columns: `snake_case` (`created_at`)
 - Foreign keys: `xxx_id` (`product_id`)
 - Bools: `is_xxx` / `has_xxx`
 
 ### 2.4 Types vs Interfaces
+
 - Prefer `type` for unions, intersections, primitives, and props
 - Use `interface` only when extending a class-like shape
 
 ### 2.5 Generated types
+
 - Supabase types live in `src/types/db.generated.ts` and are **never** edited manually.
 - Re-export named aliases from `src/types/db.ts` for ergonomic imports.
 
@@ -176,9 +181,14 @@ export function AddToCartButton({ productId, initialQty = 1 }: Props) {
 ```ts
 // src/lib/errors.ts
 export type ErrorCode =
-  | 'UNAUTHORIZED' | 'FORBIDDEN' | 'NOT_FOUND'
-  | 'VALIDATION_ERROR' | 'CONFLICT' | 'RATE_LIMITED'
-  | 'STOCK_INSUFFICIENT' | 'INTERNAL';
+  | 'UNAUTHORIZED'
+  | 'FORBIDDEN'
+  | 'NOT_FOUND'
+  | 'VALIDATION_ERROR'
+  | 'CONFLICT'
+  | 'RATE_LIMITED'
+  | 'STOCK_INSUFFICIENT'
+  | 'INTERNAL';
 
 export class AppError extends Error {
   constructor(
@@ -194,12 +204,9 @@ export class AppError extends Error {
 
 export const unauthorized = (m = 'Authentication required') =>
   new AppError('UNAUTHORIZED', m, undefined, 401);
-export const forbidden = (m = 'Forbidden') =>
-  new AppError('FORBIDDEN', m, undefined, 403);
-export const notFound = (m = 'Not found') =>
-  new AppError('NOT_FOUND', m, undefined, 404);
-export const conflict = (m: string) =>
-  new AppError('CONFLICT', m, undefined, 409);
+export const forbidden = (m = 'Forbidden') => new AppError('FORBIDDEN', m, undefined, 403);
+export const notFound = (m = 'Not found') => new AppError('NOT_FOUND', m, undefined, 404);
+export const conflict = (m: string) => new AppError('CONFLICT', m, undefined, 409);
 export const stockInsufficient = (productId: string) =>
   new AppError('STOCK_INSUFFICIENT', 'Not enough stock', { productId }, 409);
 ```
@@ -207,7 +214,7 @@ export const stockInsufficient = (productId: string) =>
 ## 6. Logging
 
 - Server: `logger.info({ orderId }, 'order_placed')` (Pino-style)
-- Client: `clientLogger.warn(...)` — wraps Sentry breadcrumbs
+- Client: `clientLogger.warn(...)`
 - Never log secrets, full tokens, full PII
 
 ## 7. Comments & Docs
@@ -228,11 +235,16 @@ export const stockInsufficient = (productId: string) =>
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-misused-promises": "error",
-    "import/order": ["error", { /* groups + alphabetize */ }],
+    "import/order": [
+      "error",
+      {
+        /* groups + alphabetize */
+      },
+    ],
     "import/no-default-export": ["error", { "allow": [] }],
     "react/jsx-key": "error",
-    "react-hooks/exhaustive-deps": "error"
-  }
+    "react-hooks/exhaustive-deps": "error",
+  },
 }
 ```
 
@@ -248,13 +260,14 @@ Plus `eslint-plugin-boundaries` to enforce the import rules in `FOLDER_STRUCTURE
   "printWidth": 100,
   "tabWidth": 2,
   "arrowParens": "always",
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": ["prettier-plugin-tailwindcss"],
 }
 ```
 
 ## 10. Git Workflow
 
 ### 10.1 Branches
+
 - `main` — production
 - `develop` — integration
 - `feat/<slug>` — new features

@@ -32,6 +32,7 @@
 ## 3. The `AppError` Class
 
 See `CODING_STANDARDS.md §5` for the full type. Key properties:
+
 - `code`: stable enum value (`VALIDATION_ERROR`, `STOCK_INSUFFICIENT`, etc.)
 - `message`: developer-facing message
 - `details`: optional structured info (for validation: field errors)
@@ -107,13 +108,24 @@ export const apiResponse = {
   },
   validationError(zodError: unknown) {
     return NextResponse.json(
-      { ok: false, error: { code: 'VALIDATION_ERROR', message: 'Invalid input', details: zodError } },
+      {
+        ok: false,
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid input', details: zodError },
+      },
       { status: 400 },
     );
   },
   error(err: AppError) {
     return NextResponse.json(
-      { ok: false, error: { code: err.code, message: err.message, details: err.details, requestId: getRequestId() } },
+      {
+        ok: false,
+        error: {
+          code: err.code,
+          message: err.message,
+          details: err.details,
+          requestId: getRequestId(),
+        },
+      },
       { status: err.httpStatus },
     );
   },
@@ -147,16 +159,25 @@ export function useActionWithFeedback() {
 
 - `error.tsx` per route group — renders a friendly fallback with retry button
 - `global-error.tsx` for app-shell-level crashes
-- All errors caught here are forwarded to Sentry via `captureException`
+- All errors caught here are forwarded through the shared client logger
 
 ```tsx
 // src/app/(shop)/error.tsx
 'use client';
-import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 
-export default function ShopError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
-  useEffect(() => { Sentry.captureException(error); }, [error]);
+import { clientLogger } from '@/lib/logger/client';
+
+export default function ShopError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    clientLogger.error(error);
+  }, [error]);
   return (
     <ErrorState
       title="Something broke on our end"
@@ -194,13 +215,13 @@ All user-facing error codes have entries in `messages/<locale>.json`:
 - Never log: passwords, tokens, full credit card numbers, full PII without redaction
 - Always include: `requestId`, `userId` (if auth'd), `path`, relevant entity IDs
 
-## 11. Sentry Integration
+## 11. Error Reporting
 
-- Browser SDK + server SDK
-- Source maps uploaded in CI
-- PII filters configured (`beforeSend` strips emails)
-- Sample rate: 100% errors, 10% performance traces in prod, 100% in staging
-- Release tagging via `SENTRY_RELEASE` env var (set from git SHA)
+- No third-party error tracker is part of the current owner-approved stack
+- Browser errors flow through `clientLogger`
+- Server errors flow through Pino and Vercel logs
+- Never emit passwords, tokens, cookies, or full PII into either path
+- If a dedicated tracker is added later, it must preserve the same redaction rules
 
 ## 12. Form Validation UX
 
@@ -211,21 +232,21 @@ All user-facing error codes have entries in `messages/<locale>.json`:
 
 ## 13. Edge Cases Catalog
 
-| Case | Strategy |
-|---|---|
+| Case                                    | Strategy                                                                          |
+| --------------------------------------- | --------------------------------------------------------------------------------- |
 | Stock changes between cart and checkout | Re-validate in `place_order` RPC; return `STOCK_INSUFFICIENT` with affected items |
-| Network drop mid-submit | Idempotency-Key prevents duplicate orders |
-| Image upload partial fail | Continue product save; allow user to retry image |
-| Email send fails | Order still saved; outbox row marked failed; retry job picks up |
-| Admin double-clicks delete | Disable button after click; confirmation dialog |
-| Invalid signed URL | Show generic "link expired" page |
+| Network drop mid-submit                 | Idempotency-Key prevents duplicate orders                                         |
+| Image upload partial fail               | Continue product save; allow user to retry image                                  |
+| Email send fails                        | Order still saved; outbox row marked failed; retry job picks up                   |
+| Admin double-clicks delete              | Disable button after click; confirmation dialog                                   |
+| Invalid signed URL                      | Show generic "link expired" page                                                  |
 
 ## 14. Public vs Internal Errors
 
-| Where | Detail level |
-|---|---|
-| Server logs (Pino + Sentry) | Full stack + context |
-| Client toasts / UI | Localized, short, action-oriented |
-| API responses | Code + message; details only when safe (validation) |
+| Where              | Detail level                                        |
+| ------------------ | --------------------------------------------------- |
+| Server logs (Pino) | Full stack + context                                |
+| Client toasts / UI | Localized, short, action-oriented                   |
+| API responses      | Code + message; details only when safe (validation) |
 
 Never expose internal exceptions, SQL strings, or stack traces to the client.

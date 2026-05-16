@@ -10,7 +10,7 @@
 2. **API-first for mutations, RSC-first for reads.** Server Actions and Route Handlers are wired before the UI that calls them.
 3. **Vertical slices after foundation.** Once foundation is done, ship one full slice (e.g., "list products end-to-end") before starting another.
 4. **Admin and public can build in parallel after foundation.** They share the same data layer.
-5. **No premature optimization.** Add Redis rate-limiting, Sentry, etc. when the section calls for it — not earlier.
+5. **No premature optimization.** Add Redis rate-limiting and other infrastructure when the section calls for it — not earlier.
 6. **Every step ends with a runnable, testable state.** Never leave the repo broken.
 
 ---
@@ -139,7 +139,7 @@ Apply locally with `supabase db push --local` after each.
 ### Step 1.9 — Logger
 
 - Implement Pino server logger with redact rules (`LOGGING_MONITORING.md §3`)
-- Implement client logger shim (will be wired to Sentry later)
+- Implement client logger shim
 
 ### Step 1.10 — Validators
 
@@ -187,9 +187,8 @@ Implement these in `src/components/ui/` (use shadcn CLI to generate, then custom
 
 ### Step 1.15 — Sentry
 
-- Install `@sentry/nextjs`, run wizard
-- Configure `beforeSend` PII scrubbing
-- Verify a deliberate `throw` shows up in Sentry from staging
+- **Skipped by owner decision on 2026-05-17.** No third-party error tracker will be added at this stage.
+- Keep Pino server logging + the client logger shim as the active error-reporting path unless this decision is revisited later.
 
 ### Step 1.16 — Vercel Analytics & Speed Insights
 
@@ -609,7 +608,7 @@ Goal: production-ready release.
 
 ### Step 5.8 — Monitoring & Alerts
 
-- Sentry production project linked
+- Error-reporting approach confirmed for production
 - Better Stack uptime monitor pointed at production `/api/health`
 - Slack #alerts channel routed
 - Runbooks committed
@@ -634,7 +633,7 @@ Walk every box in:
 
 - Tag `v1.0.0`
 - Merge `develop` → `main`
-- Watch Sentry + uptime for 1 hour
+- Watch logs + uptime for 1 hour
 - Announce
 
 ### Step 5.12 — Post-Launch Watch (Week 1)
@@ -753,7 +752,7 @@ Reach for these only when metrics demand.
 ### 8D — Observability Upgrade
 
 - Logtail / Datadog drains from Vercel
-- Sentry Performance traces at 100%
+- Performance monitoring reviewed
 - Custom Grafana boards over Postgres
 
 ### 8E — Personalization
