@@ -3,6 +3,15 @@
   "nav": {},
   "shop": {},
   "checkout": {},
-  "errors": {},
+  "errors": {
+    "VALIDATION_ERROR": "Please check the form and try again.",
+    "STOCK_INSUFFICIENT": "Some items are out of stock.",
+    "RATE_LIMITED": "Too many requests. Please wait a moment.",
+    "INTERNAL": "Something went wrong. Please try again.",
+    "UNAUTHORIZED": "Please sign in to continue.",
+    "FORBIDDEN": "You don't have permission to do that.",
+    "NOT_FOUND": "We couldn't find that.",
+    "CONFLICT": "There was a conflict. Please reload and try again."
+  },
   "emails": {}
 }
