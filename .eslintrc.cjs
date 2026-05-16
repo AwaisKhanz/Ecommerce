@@ -2,6 +2,10 @@ module.exports = {
   root: true,
   extends: ['next/core-web-vitals', 'plugin:@typescript-eslint/strict', 'prettier'],
   plugins: ['boundaries'],
+  parserOptions: {
+    projectService: true,
+    tsconfigRootDir: __dirname,
+  },
   rules: {
     'no-console': ['error', { allow: ['warn', 'error'] }],
     '@typescript-eslint/no-explicit-any': 'error',
@@ -57,4 +61,12 @@ module.exports = {
     ],
     'boundaries/ignore': ['**/*.test.*', '**/*.spec.*'],
   },
+  overrides: [
+    {
+      files: ['next-env.d.ts'],
+      rules: {
+        '@typescript-eslint/triple-slash-reference': 'off',
+      },
+    },
+  ],
 };
