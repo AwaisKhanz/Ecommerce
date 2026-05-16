@@ -2,8 +2,10 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
+import { Toaster } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { isRtl, locales } from '@/config/i18n';
-import { inter, spaceGrotesk } from '@/styles/fonts';
+import { inter, jetBrainsMono, spaceGrotesk } from '@/styles/fonts';
 import '@/styles/globals.css';
 
 type LocaleLayoutProps = Readonly<{
@@ -28,8 +30,11 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={isRtl(locale) ? 'rtl' : 'ltr'}>
-      <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} ${jetBrainsMono.variable}`}>
+        <NextIntlClientProvider messages={messages}>
+          <TooltipProvider>{children}</TooltipProvider>
+          <Toaster />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

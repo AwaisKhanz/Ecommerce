@@ -3,10 +3,11 @@
 ## 1. Philosophy
 
 - **Tokens, not magic numbers.** Every color, spacing, radius, and shadow is a token.
-- **One semantic layer.** Components consume *semantic* tokens (`bg-surface`), not raw ones (`bg-zinc-100`).
+- **One semantic layer.** Components consume _semantic_ tokens (`bg-surface`), not raw ones (`bg-zinc-100`).
 - **Composable.** Primitives over bespoke components.
 - **Themeable.** Light, dark, and brand variants via CSS variables.
 - **Accessible by default.** Built on Radix primitives.
+- **Design-led screens.** The design system governs primitives, but every actual screen must be implemented only after its final screen design is provided and confirmed.
 
 ## 2. Token Architecture
 
@@ -32,56 +33,73 @@
 @layer base {
   :root {
     /* Primitive */
-    --c-zinc-50:  #fafafa; --c-zinc-100: #f4f4f5; --c-zinc-900: #18181b;
-    --c-brand-50: #f0fdf4; --c-brand-500: #16a34a; --c-brand-700: #15803d;
+    --c-zinc-50: #fafafa;
+    --c-zinc-100: #f4f4f5;
+    --c-zinc-900: #18181b;
+    --c-brand-50: #f0fdf4;
+    --c-brand-500: #16a34a;
+    --c-brand-700: #15803d;
     --c-danger-500: #ef4444;
-    --c-warn-500:   #f59e0b;
-    --c-success-500:#22c55e;
-    --c-info-500:   #3b82f6;
+    --c-warn-500: #f59e0b;
+    --c-success-500: #22c55e;
+    --c-info-500: #3b82f6;
 
     /* Spacing scale (4-base) */
-    --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem;
-    --s-6: 1.5rem;  --s-8: 2rem;   --s-12: 3rem;   --s-16: 4rem;
+    --s-1: 0.25rem;
+    --s-2: 0.5rem;
+    --s-3: 0.75rem;
+    --s-4: 1rem;
+    --s-6: 1.5rem;
+    --s-8: 2rem;
+    --s-12: 3rem;
+    --s-16: 4rem;
 
     /* Radii */
-    --r-sm: 0.25rem; --r-md: 0.5rem; --r-lg: 0.75rem; --r-xl: 1rem; --r-full: 9999px;
+    --r-sm: 0.25rem;
+    --r-md: 0.5rem;
+    --r-lg: 0.75rem;
+    --r-xl: 1rem;
+    --r-full: 9999px;
 
     /* Shadows */
-    --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
-    --shadow-md: 0 4px 12px rgba(0,0,0,.08);
-    --shadow-lg: 0 12px 32px rgba(0,0,0,.12);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
 
     /* Semantic — light theme */
-    --bg-page:    var(--c-zinc-50);
+    --bg-page: var(--c-zinc-50);
     --bg-surface: #ffffff;
-    --bg-muted:   var(--c-zinc-100);
+    --bg-muted: var(--c-zinc-100);
     --fg-primary: var(--c-zinc-900);
-    --fg-muted:   #71717a;
-    --border:     #e4e4e7;
-    --accent:     var(--c-brand-500);
-    --accent-fg:  #ffffff;
-    --danger:     var(--c-danger-500);
-    --warn:       var(--c-warn-500);
-    --success:    var(--c-success-500);
-    --info:       var(--c-info-500);
+    --fg-muted: #71717a;
+    --border: #e4e4e7;
+    --accent: var(--c-brand-500);
+    --accent-fg: #ffffff;
+    --danger: var(--c-danger-500);
+    --warn: var(--c-warn-500);
+    --success: var(--c-success-500);
+    --info: var(--c-info-500);
 
     /* Typography */
     --font-sans: 'Inter', system-ui, sans-serif;
     --font-display: 'Space Grotesk', var(--font-sans);
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
     /* Motion */
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --d-fast: 150ms; --d-base: 220ms; --d-slow: 320ms;
+    --d-fast: 150ms;
+    --d-base: 220ms;
+    --d-slow: 320ms;
   }
 
   .dark {
-    --bg-page:    #0a0a0a;
+    --bg-page: #0a0a0a;
     --bg-surface: #111111;
-    --bg-muted:   #1a1a1a;
+    --bg-muted: #1a1a1a;
     --fg-primary: #fafafa;
-    --fg-muted:   #a1a1aa;
-    --border:     #27272a;
-    --accent:     #22c55e;
+    --fg-muted: #a1a1aa;
+    --border: #27272a;
+    --accent: #22c55e;
   }
 }
 ```
@@ -104,20 +122,31 @@ export default {
         fg: { DEFAULT: 'var(--fg-primary)', muted: 'var(--fg-muted)' },
         border: 'var(--border)',
         accent: { DEFAULT: 'var(--accent)', fg: 'var(--accent-fg)' },
-        danger: 'var(--danger)', warn: 'var(--warn)', success: 'var(--success)', info: 'var(--info)',
+        danger: 'var(--danger)',
+        warn: 'var(--warn)',
+        success: 'var(--success)',
+        info: 'var(--info)',
       },
       fontFamily: {
         sans: ['var(--font-sans)'],
         display: ['var(--font-display)'],
+        mono: ['var(--font-mono)'],
       },
       borderRadius: {
-        sm: 'var(--r-sm)', md: 'var(--r-md)', lg: 'var(--r-lg)', xl: 'var(--r-xl)',
+        sm: 'var(--r-sm)',
+        md: 'var(--r-md)',
+        lg: 'var(--r-lg)',
+        xl: 'var(--r-xl)',
       },
       boxShadow: {
-        sm: 'var(--shadow-sm)', md: 'var(--shadow-md)', lg: 'var(--shadow-lg)',
+        sm: 'var(--shadow-sm)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
       },
       transitionDuration: {
-        fast: 'var(--d-fast)', base: 'var(--d-base)', slow: 'var(--d-slow)',
+        fast: 'var(--d-fast)',
+        base: 'var(--d-base)',
+        slow: 'var(--d-slow)',
       },
     },
   },
@@ -129,19 +158,19 @@ export default {
 
 `/components/ui/` includes:
 
-| Primitive | Notes |
-|---|---|
-| `Button` | variants: primary, secondary, ghost, destructive, link; sizes: sm, md, lg |
-| `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch` | shadcn-style |
-| `Dialog`, `Drawer`, `Popover`, `Tooltip` | Radix |
-| `Toast` | sonner |
-| `Tabs`, `Accordion`, `DropdownMenu` | Radix |
-| `Card`, `Badge`, `Alert`, `Avatar` | atomic |
-| `Form`, `Label`, `FormMessage`, `FormDescription` | RHF wrappers |
-| `DataTable`, `Pagination` | TanStack Table |
-| `Skeleton`, `EmptyState`, `Loader`, `ErrorState`, `DataState` | state primitives |
-| `Container`, `Section`, `Grid`, `Stack` | layout |
-| `AppLink` | next/link wrapper with locale + analytics |
+| Primitive                                                     | Notes                                                                     |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `Button`                                                      | variants: primary, secondary, ghost, destructive, link; sizes: sm, md, lg |
+| `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch`  | shadcn-style                                                              |
+| `Dialog`, `Drawer`, `Popover`, `Tooltip`                      | Radix                                                                     |
+| `Toast`                                                       | sonner                                                                    |
+| `Tabs`, `Accordion`, `DropdownMenu`                           | Radix                                                                     |
+| `Card`, `Badge`, `Alert`, `Avatar`                            | atomic                                                                    |
+| `Form`, `Label`, `FormMessage`, `FormDescription`             | RHF wrappers                                                              |
+| `DataTable`, `Pagination`                                     | TanStack Table                                                            |
+| `Skeleton`, `EmptyState`, `Loader`, `ErrorState`, `DataState` | state primitives                                                          |
+| `Container`, `Section`, `Grid`, `Stack`                       | layout                                                                    |
+| `AppLink`                                                     | next/link wrapper with locale + analytics                                 |
 
 ## 6. Variants Strategy
 
@@ -168,27 +197,28 @@ export const buttonVariants = cva(
       },
     },
     defaultVariants: { variant: 'primary', size: 'md' },
-  }
+  },
 );
 
-export type ButtonProps = VariantProps<typeof buttonVariants> & ButtonHTMLAttributes<HTMLButtonElement>;
+export type ButtonProps = VariantProps<typeof buttonVariants> &
+  ButtonHTMLAttributes<HTMLButtonElement>;
 ```
 
 ## 7. Typography Scale
 
-| Token | Mobile | Desktop | Use |
-|---|---|---|---|
-| `text-xs`   | 12 | 12 | tiny labels |
-| `text-sm`   | 14 | 14 | secondary text |
-| `text-base` | 16 | 16 | body |
-| `text-lg`   | 18 | 18 | emphasized body |
-| `text-xl`   | 20 | 20 | small headings |
-| `text-2xl`  | 22 | 24 | h3 |
-| `text-3xl`  | 26 | 30 | h2 |
-| `text-4xl`  | 32 | 40 | h1 |
-| `text-5xl`  | 40 | 56 | hero |
+| Token       | Mobile | Desktop | Use             |
+| ----------- | ------ | ------- | --------------- |
+| `text-xs`   | 12     | 12      | tiny labels     |
+| `text-sm`   | 14     | 14      | secondary text  |
+| `text-base` | 16     | 16      | body            |
+| `text-lg`   | 18     | 18      | emphasized body |
+| `text-xl`   | 20     | 20      | small headings  |
+| `text-2xl`  | 22     | 24      | h3              |
+| `text-3xl`  | 26     | 30      | h2              |
+| `text-4xl`  | 32     | 40      | h1              |
+| `text-5xl`  | 40     | 56      | hero            |
 
-Headings use `font-display`, body uses `font-sans`.
+Headings use `font-display`, body uses `font-sans`, and IDs/SKUs/code use `font-mono`.
 
 ## 8. Spacing & Layout
 
@@ -217,6 +247,7 @@ Headings use `font-display`, body uses `font-sans`.
 - Use Framer Motion only for non-trivial animations (drawer, modals, page transitions).
 - Use Tailwind `transition-*` classes for everyday hover/focus changes.
 - Respect `prefers-reduced-motion`:
+
 ```tsx
 const shouldReduceMotion = useReducedMotion();
 const variants = shouldReduceMotion ? {} : motionVariants;
@@ -240,6 +271,7 @@ const variants = shouldReduceMotion ? {} : motionVariants;
 ## 14. Component Examples
 
 ### 14.1 Button
+
 ```tsx
 <Button variant="primary" size="lg" onClick={...}>
   Place Order
@@ -247,6 +279,7 @@ const variants = shouldReduceMotion ? {} : motionVariants;
 ```
 
 ### 14.2 Card
+
 ```tsx
 <Card className="p-6">
   <CardHeader>
@@ -258,12 +291,17 @@ const variants = shouldReduceMotion ? {} : motionVariants;
 ```
 
 ### 14.3 Empty State
+
 ```tsx
 <EmptyState
   icon={<PackageOpen />}
   title="No products yet"
   description="Add your first product to start selling."
-  action={<Button asChild><Link href="/admin/products/new">Add product</Link></Button>}
+  action={
+    <Button asChild>
+      <Link href="/admin/products/new">Add product</Link>
+    </Button>
+  }
 />
 ```
 
@@ -283,6 +321,7 @@ export const brandConfig = {
 ## 16. Storybook (Recommended, Phase 2)
 
 When component count crosses ~30, add Storybook for:
+
 - Visual regression
 - Documentation
 - Designer handoff
@@ -291,6 +330,7 @@ When component count crosses ~30, add Storybook for:
 ## 17. Design Tokens Source of Truth
 
 Tokens are defined once in `globals.css` and referenced via Tailwind config. **Never** introduce a new color, radius, or shadow without:
+
 1. Adding the primitive to `globals.css`
 2. Mapping it to a semantic token if needed
 3. Updating `tailwind.config.ts`

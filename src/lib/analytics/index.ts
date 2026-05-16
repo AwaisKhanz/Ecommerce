@@ -3,6 +3,7 @@
 import { track as vercelTrack } from '@vercel/analytics';
 
 type EventMap = {
+  'nav.click': { event: string; href: string };
   'product.viewed': { productId: string; slug: string; price: number };
   'product.added_to_cart': { productId: string; qty: number; price: number };
   'checkout.submitted': { lineCount: number; total: number };

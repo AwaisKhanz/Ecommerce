@@ -169,6 +169,8 @@ Implement these in `src/components/ui/` (use shadcn CLI to generate, then custom
 - Sonner `Toaster` mounted in root layout
 - Refs: `DESIGN_SYSTEM.md §5`
 
+**Design gate:** Use the approved design system as the source of truth for tokens and primitives. Before implementing any actual user-facing screen in this or any later phase, obtain and confirm the final design for that specific screen first.
+
 ### Step 1.13 — Layout Shells
 
 - Public header (`PublicHeader`) — minimal nav + cart icon placeholder + locale switcher
@@ -801,6 +803,7 @@ Phase 0 → Phase 1 → Phase 2  ┐
 ```
 
 - Phase 1 is the gate. Nothing user-facing should ship before its DB, types, errors, design system, and auth are in place.
+- Any actual screen implementation is gated by a confirmed screen design from the client before coding begins.
 - Phases 2 and 3 are sequential (cart needs products to exist).
 - Phase 4 (admin) can run in parallel with Phase 2 & 3 after Phase 1 because it touches the same data layer.
 - Phase 5 (launch) requires 2, 3, and 4 to be complete.
