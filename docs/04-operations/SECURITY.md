@@ -6,20 +6,20 @@
 
 ## 2. Threat Model
 
-| Threat | Mitigation |
-|---|---|
-| Stolen admin credentials | Strong password + MFA-ready + rate-limited login + audit log |
-| SQL injection | Parameterized queries via Supabase client; no raw SQL with user input |
-| XSS | React auto-escapes; no `dangerouslySetInnerHTML` without DOMPurify |
-| CSRF | SameSite cookies + Next.js Server Action origin check |
-| SSRF | No user-supplied URLs fetched by server (unless allowlisted) |
-| Open redirect | Allowlist redirect targets |
-| Mass enumeration of orders | Signed URL tokens, no public lookup by order # alone |
-| Brute force | Rate limit at edge + account lockouts |
-| Fraudulent orders | Idempotency + phone verification (Phase 2) |
-| Image/asset abuse | File type + size limits, storage RLS |
-| Bot scraping | Robots.txt + rate limit + Cloudflare-style WAF (Phase 2) |
-| Insider risk (admin) | Audit log + least-privilege roles |
+| Threat                     | Mitigation                                                            |
+| -------------------------- | --------------------------------------------------------------------- |
+| Stolen admin credentials   | Strong password + MFA-ready + rate-limited login + audit log          |
+| SQL injection              | Parameterized queries via Supabase client; no raw SQL with user input |
+| XSS                        | React auto-escapes; no `dangerouslySetInnerHTML` without DOMPurify    |
+| CSRF                       | SameSite cookies + Next.js Server Action origin check                 |
+| SSRF                       | No user-supplied URLs fetched by server (unless allowlisted)          |
+| Open redirect              | Allowlist redirect targets                                            |
+| Mass enumeration of orders | Signed URL tokens, no public lookup by order # alone                  |
+| Brute force                | Rate limit at edge + account lockouts                                 |
+| Fraudulent orders          | Idempotency + phone verification (Phase 2)                            |
+| Image/asset abuse          | File type + size limits, storage RLS                                  |
+| Bot scraping               | Robots.txt + rate limit + Cloudflare-style WAF (Phase 2)              |
+| Insider risk (admin)       | Audit log + least-privilege roles                                     |
 
 ## 3. Transport Security
 
@@ -78,12 +78,12 @@ CSP nonces generated per request via Next.js middleware.
 
 ## 10. Rate Limiting
 
-| Endpoint | Limit |
-|---|---|
-| `POST /api/v1/orders` | 5/min/IP |
-| `POST /api/v1/contact` | 3/min/IP |
-| Admin login | 5 / 15 min / IP |
-| Public GETs | 60/min/IP |
+| Endpoint               | Limit           |
+| ---------------------- | --------------- |
+| `POST /api/v1/orders`  | 5/min/IP        |
+| `POST /api/v1/contact` | 3/min/IP        |
+| Admin login            | 5 / 15 min / IP |
+| Public GETs            | 60/min/IP       |
 
 Implemented via Upstash Redis with sliding window. Always returns `429` + `Retry-After`.
 
@@ -124,7 +124,7 @@ Implemented via Upstash Redis with sliding window. Always returns `429` + `Retry
 - PII (phone, address) stored encrypted at rest (Supabase managed)
 - Logs mask PII (see `LOGGING_MONITORING.md §13`)
 - Customer phone never displayed in URLs / query strings
-- Order tokens use HMAC signing with `SUPABASE_JWT_SECRET`
+- Order tokens use HMAC signing with dedicated `ORDER_CONFIRMATION_SIGNING_SECRET`
 
 ## 17. Admin Account Hygiene
 
@@ -162,6 +162,7 @@ Implemented via Upstash Redis with sliding window. Always returns `429` + `Retry
 ## 22. Security Headers Test
 
 Run after every deploy:
+
 - `https://securityheaders.com/?q=<your-domain>` — target grade A
 - `https://observatory.mozilla.org/` — target ≥ 90
 
@@ -193,4 +194,4 @@ Run after every deploy:
 - [ ] Backup + recovery tested
 - [ ] Sentry receiving + scrubbing PII
 - [ ] Admin MFA-ready (UI present, can enable per user)
-- [ ] Strong admin password set, BOOTSTRAP_* env vars purged after first run
+- [ ] Strong admin password set, BOOTSTRAP\_\* env vars purged after first run

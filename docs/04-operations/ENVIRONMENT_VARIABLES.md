@@ -12,70 +12,75 @@
 
 ### 2.1 Application
 
-| Name | Required | Example | Scope |
-|---|---|---|---|
-| `NODE_ENV` | yes | `production` | server |
-| `NEXT_PUBLIC_APP_URL` | yes | `https://industrialshop.com` | client/server |
-| `NEXT_PUBLIC_APP_NAME` | yes | `IndustrialShop` | client/server |
-| `NEXT_PUBLIC_DEFAULT_LOCALE` | yes | `en` | client/server |
-| `NEXT_PUBLIC_ENABLED_LOCALES` | yes | `en,ar` | client/server |
-| `NEXT_PUBLIC_DEFAULT_CURRENCY` | yes | `USD` | client/server |
+| Name                           | Required | Example                      | Scope         |
+| ------------------------------ | -------- | ---------------------------- | ------------- |
+| `NODE_ENV`                     | yes      | `production`                 | server        |
+| `NEXT_PUBLIC_APP_URL`          | yes      | `https://industrialshop.com` | client/server |
+| `NEXT_PUBLIC_APP_NAME`         | yes      | `IndustrialShop`             | client/server |
+| `NEXT_PUBLIC_DEFAULT_LOCALE`   | yes      | `en`                         | client/server |
+| `NEXT_PUBLIC_ENABLED_LOCALES`  | yes      | `en,ar`                      | client/server |
+| `NEXT_PUBLIC_DEFAULT_CURRENCY` | yes      | `USD`                        | client/server |
 
 ### 2.2 Supabase
 
-| Name | Required | Example | Scope |
-|---|---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | yes | `https://xxx.supabase.co` | client/server |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | yes | `eyJhbGciOi...` | client/server |
-| `SUPABASE_SERVICE_ROLE_KEY` | yes | `eyJhbGciOi...` | **server only** |
-| `SUPABASE_JWT_SECRET` | yes | `...` | server only |
-| `SUPABASE_DB_URL` | optional | `postgres://...` | server only — for migrations |
+| Name                            | Required | Example                   | Scope                        |
+| ------------------------------- | -------- | ------------------------- | ---------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | yes      | `https://xxx.supabase.co` | client/server                |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | yes      | `eyJhbGciOi...`           | client/server                |
+| `SUPABASE_SERVICE_ROLE_KEY`     | yes      | `eyJhbGciOi...`           | **server only**              |
+| `SUPABASE_DB_URL`               | optional | `postgres://...`          | server only — for migrations |
 
-### 2.3 Email (Resend)
+### 2.3 App-owned signing
 
-| Name | Required | Example |
-|---|---|---|
-| `RESEND_API_KEY` | yes | `re_...` |
-| `RESEND_FROM_EMAIL` | yes | `orders@industrialshop.com` |
-| `RESEND_FROM_NAME` | yes | `IndustrialShop` |
-| `RESEND_WEBHOOK_SECRET` | yes (Phase 2) | `whsec_...` |
-| `ADMIN_NOTIFY_EMAIL` | yes | `owner@industrialshop.com` |
+| Name                                | Required      | Example | Scope       |
+| ----------------------------------- | ------------- | ------- | ----------- |
+| `ORDER_CONFIRMATION_SIGNING_SECRET` | yes (Phase 3) | `...`   | server only |
 
-### 2.4 Analytics & Monitoring
+### 2.4 Email (Resend)
 
-| Name | Required | Example |
-|---|---|---|
-| `SENTRY_DSN` | yes (prod) | `https://...@sentry.io/...` |
-| `SENTRY_AUTH_TOKEN` | CI only | `...` |
-| `SENTRY_ORG` | CI only | `industrialshop` |
-| `SENTRY_PROJECT` | CI only | `web` |
-| `NEXT_PUBLIC_VERCEL_ANALYTICS_ID` | optional | auto-set on Vercel |
+| Name                    | Required      | Example                     |
+| ----------------------- | ------------- | --------------------------- |
+| `RESEND_API_KEY`        | yes           | `re_...`                    |
+| `RESEND_FROM_EMAIL`     | yes           | `orders@industrialshop.com` |
+| `RESEND_FROM_NAME`      | yes           | `IndustrialShop`            |
+| `RESEND_WEBHOOK_SECRET` | yes (Phase 2) | `whsec_...`                 |
+| `ADMIN_NOTIFY_EMAIL`    | yes           | `owner@industrialshop.com`  |
 
-### 2.5 Rate Limiting (Upstash Redis)
+### 2.5 Analytics & Monitoring
 
-| Name | Required | Example |
-|---|---|---|
-| `UPSTASH_REDIS_REST_URL` | yes (prod) | `https://...upstash.io` |
-| `UPSTASH_REDIS_REST_TOKEN` | yes (prod) | `...` |
+| Name                              | Required   | Example                     |
+| --------------------------------- | ---------- | --------------------------- |
+| `SENTRY_DSN`                      | yes (prod) | `https://...@sentry.io/...` |
+| `SENTRY_AUTH_TOKEN`               | CI only    | `...`                       |
+| `SENTRY_ORG`                      | CI only    | `industrialshop`            |
+| `SENTRY_PROJECT`                  | CI only    | `web`                       |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS_ID` | optional   | auto-set on Vercel          |
+
+### 2.6 Rate Limiting (Upstash Redis)
+
+| Name                       | Required   | Example                 |
+| -------------------------- | ---------- | ----------------------- |
+| `UPSTASH_REDIS_REST_URL`   | yes (prod) | `https://...upstash.io` |
+| `UPSTASH_REDIS_REST_TOKEN` | yes (prod) | `...`                   |
 
 Optional in dev; falls back to in-memory limiter.
 
-### 2.6 Admin Bootstrap
+### 2.7 Admin Bootstrap
 
-| Name | Required | Example |
-|---|---|---|
-| `BOOTSTRAP_ADMIN_EMAIL` | one-time | `owner@example.com` |
-| `BOOTSTRAP_ADMIN_PASSWORD` | one-time | (long random) |
+| Name                       | Required | Example             |
+| -------------------------- | -------- | ------------------- |
+| `BOOTSTRAP_ADMIN_EMAIL`    | one-time | `owner@example.com` |
+| `BOOTSTRAP_ADMIN_PASSWORD` | one-time | (long random)       |
 
 Used only by the one-off `pnpm run admin:create` script.
 
-### 2.7 Build / Deploy
+### 2.8 Build / Deploy
 
-| Name | Set by |
-|---|---|
-| `VERCEL_ENV` | Vercel auto |
+| Name                    | Set by      |
+| ----------------------- | ----------- |
+| `VERCEL_ENV`            | Vercel auto |
 | `VERCEL_GIT_COMMIT_SHA` | Vercel auto |
-| `SENTRY_RELEASE` | CI |
+| `SENTRY_RELEASE`        | CI          |
 
 ## 3. `.env.example`
 
@@ -93,7 +98,7 @@ NEXT_PUBLIC_DEFAULT_CURRENCY=USD
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-SUPABASE_JWT_SECRET=
+ORDER_CONFIRMATION_SIGNING_SECRET=
 SUPABASE_DB_URL=
 
 # === Resend ===
@@ -118,7 +123,7 @@ import { z } from 'zod';
 const serverSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
-  SUPABASE_JWT_SECRET: z.string().min(1),
+  ORDER_CONFIRMATION_SIGNING_SECRET: z.string().min(1),
   RESEND_API_KEY: z.string().min(1),
   RESEND_FROM_EMAIL: z.string().email(),
   RESEND_FROM_NAME: z.string().min(1),
@@ -156,39 +161,41 @@ if (typeof window === 'undefined') {
   parsedServer = r.data;
 }
 
-export const env = { ...parsedClient.data, ...(parsedServer ?? {}) } as
-  z.infer<typeof clientSchema> & Partial<z.infer<typeof serverSchema>>;
+export const env = { ...parsedClient.data, ...(parsedServer ?? {}) } as z.infer<
+  typeof clientSchema
+> &
+  Partial<z.infer<typeof serverSchema>>;
 ```
 
 ## 5. Environment Files
 
-| File | Purpose | Committed? |
-|---|---|---|
-| `.env.example` | Reference; placeholders only | ✅ |
-| `.env.local` | Local dev secrets | ❌ (gitignored) |
-| `.env.test` | Test env | ❌ |
-| `.env.production` | Production | ❌ (managed by Vercel) |
-| Vercel Project Env | Production & preview | UI only |
+| File               | Purpose                      | Committed?             |
+| ------------------ | ---------------------------- | ---------------------- |
+| `.env.example`     | Reference; placeholders only | ✅                     |
+| `.env.local`       | Local dev secrets            | ❌ (gitignored)        |
+| `.env.test`        | Test env                     | ❌                     |
+| `.env.production`  | Production                   | ❌ (managed by Vercel) |
+| Vercel Project Env | Production & preview         | UI only                |
 
 ## 6. Per-Environment Values
 
-| Var | Local | Preview | Production |
-|---|---|---|---|
+| Var                   | Local                   | Preview                | Production                   |
+| --------------------- | ----------------------- | ---------------------- | ---------------------------- |
 | `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` | `https://*.vercel.app` | `https://industrialshop.com` |
-| `NODE_ENV` | development | production | production |
-| Supabase | local project | staging project | production project |
-| Resend | sandbox key | sandbox key | live key |
-| Sentry | disabled | enabled (separate env) | enabled |
+| `NODE_ENV`            | development             | production             | production                   |
+| Supabase              | local project           | staging project        | production project           |
+| Resend                | sandbox key             | sandbox key            | live key                     |
+| Sentry                | disabled                | enabled (separate env) | enabled                      |
 
 ## 7. Secret Rotation Policy
 
-| Secret | Rotation |
-|---|---|
-| Supabase service role key | Quarterly + on suspected leak |
-| Supabase JWT secret | Annually + on suspected leak |
-| Resend API key | Quarterly |
-| Admin passwords | Quarterly |
-| Sentry DSN | Annually |
+| Secret                            | Rotation                      |
+| --------------------------------- | ----------------------------- |
+| Supabase service role key         | Quarterly + on suspected leak |
+| Order confirmation signing secret | Annually + on suspected leak  |
+| Resend API key                    | Quarterly                     |
+| Admin passwords                   | Quarterly                     |
+| Sentry DSN                        | Annually                      |
 
 After rotation, update Vercel env, redeploy, and revoke old key.
 
