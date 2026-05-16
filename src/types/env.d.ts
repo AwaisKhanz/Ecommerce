@@ -9,7 +9,7 @@ declare namespace NodeJS {
     NEXT_PUBLIC_SUPABASE_URL: string;
     NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
     SUPABASE_SERVICE_ROLE_KEY: string;
-    SUPABASE_JWT_SECRET: string;
+    ORDER_CONFIRMATION_SIGNING_SECRET: string;
     RESEND_API_KEY: string;
     RESEND_FROM_EMAIL: string;
     RESEND_FROM_NAME: string;

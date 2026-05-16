@@ -1,1 +1,8 @@
-{}
+{
+  "common": {},
+  "nav": {},
+  "shop": {},
+  "checkout": {},
+  "errors": {},
+  "emails": {}
+}

@@ -87,6 +87,7 @@ docs/
 
 - **Feature-based folder architecture** (not type-based)
 - **No hardcoded design values** — everything goes through design tokens
+- **Design-first screen work** — before implementing any actual screen in any phase, collect and confirm that screen's final design first
 - **Strict TypeScript** — no `any`, no implicit returns, no untyped APIs
 - **Server Components by default**, Client Components only when needed
 - **Supabase RLS for security**, never trust the client

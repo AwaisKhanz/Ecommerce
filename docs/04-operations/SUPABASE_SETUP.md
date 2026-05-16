@@ -4,10 +4,10 @@
 
 We use **two Supabase projects**:
 
-| Project | Use | Region |
-|---|---|---|
-| `industrial-shop-staging` | Develop + staging | nearest to team |
-| `industrial-shop-prod` | Production | nearest to customers |
+| Project                   | Use               | Region               |
+| ------------------------- | ----------------- | -------------------- |
+| `industrial-shop-staging` | Develop + staging | nearest to team      |
+| `industrial-shop-prod`    | Production        | nearest to customers |
 
 Optionally a third local instance via `supabase start` for fully offline dev.
 
@@ -20,8 +20,8 @@ Optionally a third local instance via `supabase start` for fully offline dev.
    - Project URL
    - `anon` public key
    - `service_role` secret key
-5. Capture JWT secret from **Project Settings → API → JWT Settings**.
-6. Add the above to `.env` files / Vercel env per `ENVIRONMENT_VARIABLES.md`.
+5. Add the above to `.env` files / Vercel env per `ENVIRONMENT_VARIABLES.md`.
+6. Do **not** reuse Supabase JWT signing material for app-owned tokens; use a dedicated app secret where needed.
 
 ## 3. Local Development Setup
 
@@ -42,6 +42,7 @@ supabase start
 ```
 
 After local start, run migrations and seed:
+
 ```bash
 supabase db reset    # applies all migrations + runs seed.sql
 ```
@@ -98,24 +99,29 @@ Then attach RLS policies from `STORAGE_ARCHITECTURE.md §9`.
 ## 8. Auth Configuration (Supabase Dashboard)
 
 **Authentication → Providers:**
+
 - Email: enabled, **Confirm email**: ON
 - Disable signups (admin-only): set **Allow new users to sign up** to OFF
 - All other providers off (Phase 1)
 
 **Authentication → URL Configuration:**
+
 - Site URL: `https://industrialshop.com`
 - Redirect URLs: `https://*.vercel.app/**`, `https://industrialshop.com/**`, `http://localhost:3000/**`
 
 **Authentication → Email Templates:**
+
 - Override default templates with branded ones (HTML + text)
 - Subjects translated per locale (or English at launch)
 - Include `{{ .ConfirmationURL }}` etc. per Supabase docs
 
 **Authentication → Rate Limits:**
+
 - Sign-ins: 5 / 15min / IP (built-in)
 - Email sends: 4 / hour / IP
 
 **MFA (Phase 2):**
+
 - Enable TOTP
 
 ## 9. Typed Database Client
@@ -174,9 +180,13 @@ export const createClient = () => {
 import { createClient as createSupa } from '@supabase/supabase-js';
 import { env } from '@/lib/env';
 
-export const adminSupabase = createSupa(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY!, {
-  auth: { autoRefreshToken: false, persistSession: false },
-});
+export const adminSupabase = createSupa(
+  env.NEXT_PUBLIC_SUPABASE_URL,
+  env.SUPABASE_SERVICE_ROLE_KEY!,
+  {
+    auth: { autoRefreshToken: false, persistSession: false },
+  },
+);
 ```
 
 ⚠ The admin client is **never** imported from a `'use client'` file or a shared component.
@@ -184,6 +194,7 @@ export const adminSupabase = createSupa(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABA
 ## 11. Seeding
 
 `supabase/seed.sql` provides:
+
 - 5 sample categories with images
 - ~20 sample products spread across categories
 - Default `settings` rows
@@ -192,6 +203,7 @@ export const adminSupabase = createSupa(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABA
 Re-run with `supabase db reset` locally; not used in production.
 
 Initial production admin is created via the **bootstrap script**, not seed:
+
 ```bash
 pnpm run admin:create -- --email owner@example.com --password "<long random>"
 ```
@@ -207,12 +219,17 @@ Test recovery quarterly by restoring into a scratch project.
 ## 13. Realtime (Phase 2+)
 
 Architecturally enabled. When activated:
+
 - Admin sees new orders appear without refresh
 - Stock levels can update in real time on the shop
 
 Wire via:
+
 ```ts
-supabase.channel('orders').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, handler).subscribe();
+supabase
+  .channel('orders')
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, handler)
+  .subscribe();
 ```
 
 ## 14. Performance Tuning
@@ -231,7 +248,7 @@ supabase.channel('orders').on('postgres_changes', { event: 'INSERT', schema: 'pu
 - [ ] Auth confirm-email enabled
 - [ ] Auth sign-up disabled (Phase 1)
 - [ ] Strong DB password rotated quarterly
-- [ ] JWT secret rotated annually
+- [ ] App-owned signing secrets rotated annually
 - [ ] Vercel + Supabase IP allowlist where possible
 
 ## 16. Common Pitfalls
