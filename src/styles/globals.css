@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --c-zinc-50: #fafafa;
+    --c-zinc-100: #f4f4f5;
+    --c-zinc-900: #18181b;
+    --c-brand-50: #f0fdf4;
+    --c-brand-500: #16a34a;
+    --c-brand-700: #15803d;
+    --c-danger-500: #ef4444;
+    --c-warn-500: #f59e0b;
+    --c-success-500: #22c55e;
+    --c-info-500: #3b82f6;
+
+    --s-1: 0.25rem;
+    --s-2: 0.5rem;
+    --s-3: 0.75rem;
+    --s-4: 1rem;
+    --s-6: 1.5rem;
+    --s-8: 2rem;
+    --s-12: 3rem;
+    --s-16: 4rem;
+
+    --r-sm: 0.25rem;
+    --r-md: 0.5rem;
+    --r-lg: 0.75rem;
+    --r-xl: 1rem;
+    --r-full: 9999px;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+
+    --bg-page: var(--c-zinc-50);
+    --bg-surface: #ffffff;
+    --bg-muted: var(--c-zinc-100);
+    --fg-primary: var(--c-zinc-900);
+    --fg-muted: #71717a;
+    --border: #e4e4e7;
+    --accent: var(--c-brand-500);
+    --accent-fg: #ffffff;
+    --danger: var(--c-danger-500);
+    --warn: var(--c-warn-500);
+    --success: var(--c-success-500);
+    --info: var(--c-info-500);
+
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Space Grotesk', var(--font-sans);
+
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --d-fast: 150ms;
+    --d-base: 220ms;
+    --d-slow: 320ms;
+  }
+
+  .dark {
+    --bg-page: #0a0a0a;
+    --bg-surface: #111111;
+    --bg-muted: #1a1a1a;
+    --fg-primary: #fafafa;
+    --fg-muted: #a1a1aa;
+    --border: #27272a;
+    --accent: #22c55e;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply bg-page text-fg;
+  }
+
+  body {
+    @apply min-h-screen bg-page font-sans text-fg antialiased;
+  }
+}
