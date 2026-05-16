@@ -2,6 +2,72 @@
   "common": {},
   "nav": {},
   "shop": {},
+  "home": {
+    "meta": {
+      "title": "Industrial equipment delivered to your site | IndustrialShop",
+      "description": "Shop generators, pumps, cables, inverters, and power tools with cash on delivery, warranty coverage, and expert support."
+    },
+    "hero": {
+      "badge": "Nationwide Cash on Delivery",
+      "titleLead": "Industrial equipment,",
+      "titleAccent": "delivered to your site.",
+      "description": "Generators, pumps, cables, inverters, and power tools — sourced from trusted brands. Order today, pay when it arrives.",
+      "primaryCta": "Shop now",
+      "secondaryCta": "See how it works",
+      "productLabel": "Honda 5.5kW Petrol Generator",
+      "warrantyTitle": "1-year warranty",
+      "warrantyDescription": "On every product",
+      "stats": {
+        "years": { "label": "Years in business", "value": "12+" },
+        "orders": { "label": "Orders delivered", "value": "8,400+" },
+        "rating": { "label": "Average rating", "value": "4.8/5" }
+      }
+    },
+    "trust": {
+      "delivery": { "title": "Cash on Delivery", "description": "Pay when it arrives" },
+      "warranty": { "title": "1-year warranty", "description": "On every product" },
+      "support": { "title": "Expert support", "description": "Mon–Sat, 9am–7pm" },
+      "brands": { "title": "Verified brands", "description": "Sourced directly" }
+    },
+    "categories": {
+      "eyebrow": "Shop by category",
+      "title": "Built for the job site",
+      "description": "Core categories covering generators, pumps, electrical, and the tools that power your work.",
+      "link": "View all categories"
+    },
+    "products": {
+      "eyebrow": "Best sellers",
+      "title": "What’s moving this month",
+      "description": "Hand-picked from our highest-rated products by professionals across the country.",
+      "link": "Shop all products",
+      "inStock": "In stock",
+      "lowStock": "Low stock",
+      "sale": "Sale"
+    },
+    "services": {
+      "eyebrow": "Services",
+      "title": "More than a shop. We help you keep things running.",
+      "link": "View all services",
+      "request": "Request service",
+      "installation": {
+        "title": "Installation",
+        "description": "On-site setup by certified technicians. Generators, pumps, electrical panels."
+      },
+      "repair": {
+        "title": "Repair & maintenance",
+        "description": "Diagnostics, replacement parts, scheduled servicing."
+      },
+      "consultation": {
+        "title": "Free consultation",
+        "description": "Not sure what to buy? Our engineers help you pick the right equipment."
+      }
+    },
+    "quote": {
+      "title": "Need a bulk quote for your project?",
+      "description": "Contractors, businesses, and B2B buyers get priority handling and volume pricing. Tell us what you need — we reply within 1 business day.",
+      "cta": "Request quote"
+    }
+  },
   "checkout": {},
   "errors": {},
   "emails": {}
