@@ -1,5 +1,7 @@
 import { Bell, Search, UserRound } from 'lucide-react';
 
+import { ThemeToggle } from '@/components/theme/theme-toggle';
+
 function AdminTopbar(): React.JSX.Element {
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-surface px-4 sm:px-6">
@@ -21,6 +23,7 @@ function AdminTopbar(): React.JSX.Element {
             className="h-9 w-72 rounded-md border border-border bg-page pl-9 pr-3 text-sm outline-none placeholder:text-fg-muted focus:border-accent"
           />
         </label>
+        <ThemeToggle />
         <button
           type="button"
           aria-label="Notifications"
