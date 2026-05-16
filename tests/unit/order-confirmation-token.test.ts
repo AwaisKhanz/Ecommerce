@@ -3,6 +3,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 describe('order confirmation tokens', () => {
   beforeEach(() => {
     vi.resetModules();
+    process.env.NODE_ENV = 'test';
+    process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000';
+    process.env.NEXT_PUBLIC_APP_NAME = 'IndustrialShop';
+    process.env.NEXT_PUBLIC_DEFAULT_LOCALE = 'en';
+    process.env.NEXT_PUBLIC_ENABLED_LOCALES = 'en';
+    process.env.NEXT_PUBLIC_DEFAULT_CURRENCY = 'USD';
+    process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://example.supabase.co';
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'anon-key';
     process.env.ORDER_CONFIRMATION_SIGNING_SECRET = 'test-order-confirmation-secret';
   });
 
