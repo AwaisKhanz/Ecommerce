@@ -81,12 +81,14 @@ export type ProductRecord = Pick<
 export type ProductSort = 'newest' | 'price-asc' | 'price-desc';
 
 export type ProductListFilters = {
+  brand?: string;
   categorySlug?: string;
   inStock?: boolean;
   maxPrice?: number;
   minPrice?: number;
   page?: number;
   perPage?: number;
+  search?: string;
   sort?: ProductSort;
   tag?: string;
 };
@@ -97,6 +99,13 @@ export type ProductListResult = {
   perPage: number;
   total: number;
 };
+
+function normalizeSearchTerm(search: string): string {
+  return search
+    .replace(/[(),.%]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 async function list(filters: ProductListFilters = {}): Promise<ProductListResult> {
   const page = Math.max(1, filters.page ?? 1);
@@ -114,6 +123,9 @@ async function list(filters: ProductListFilters = {}): Promise<ProductListResult
   if (filters.categorySlug) {
     query = query.eq('product_categories.categories.slug', filters.categorySlug);
   }
+  if (filters.brand) {
+    query = query.eq('brand', filters.brand);
+  }
   if (filters.minPrice !== undefined) {
     query = query.gte('price', filters.minPrice);
   }
@@ -125,6 +137,10 @@ async function list(filters: ProductListFilters = {}): Promise<ProductListResult
   }
   if (filters.tag) {
     query = query.contains('tags', [filters.tag]);
+  }
+  const search = filters.search ? normalizeSearchTerm(filters.search) : '';
+  if (search) {
+    query = query.or(`name.ilike.%${search}%,brand.ilike.%${search}%`);
   }
 
   switch (filters.sort ?? 'newest') {
